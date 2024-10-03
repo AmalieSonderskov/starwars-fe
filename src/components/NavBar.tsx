@@ -62,9 +62,7 @@ function NavBar() {
                 </Nav.Link>
               </DropdownMenuTrigger>
               <DropdownMenuContent className='bg-stone-900 text-white'>
-                <DropdownMenuLabel>
-                  Current balance: ᖬ{data?.userLoggedIn?.wallet}
-                </DropdownMenuLabel>
+                <DropdownMenuLabel>Credits: ᖬ{data?.userLoggedIn?.wallet}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   {" "}
@@ -75,7 +73,7 @@ function NavBar() {
                 <DropdownMenuItem>
                   {" "}
                   <Nav.Link className='hover:text-stone-400' href='/wallet'>
-                    Add balance
+                    Earn extra credits
                   </Nav.Link>
                 </DropdownMenuItem>
 

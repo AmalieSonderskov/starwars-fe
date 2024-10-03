@@ -15,6 +15,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         junkshop: "url('/src/assets/Watto_Shop.png')",
+        cave: "url('/assets/crystalcave.png')",
       },
       colors: {
         primary: {
@@ -23,6 +24,10 @@ module.exports = {
         },
       },
       keyframes: {
+        slideIn: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
         "accordion-down": {
           from: {
             height: "0",
@@ -41,6 +46,7 @@ module.exports = {
         },
       },
       animation: {
+        slideIn: "slideIn 3s ease-out forwards",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },

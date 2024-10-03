@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input"
 import { graphql } from "@/gql"
 import { userVar } from "@/state/userState"
-import { useMutation, useQuery } from "@apollo/client"
+import { useMutation } from "@apollo/client"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 

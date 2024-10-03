@@ -45,6 +45,8 @@ export const SpecificItemView = () => {
         item: { ...vars, userId: Number(user?.user?.id) },
         itemId: Number(data.item.id),
       },
+
+      refetchQueries: ["itemsByUser"],
     })
     navigate("/")
   }

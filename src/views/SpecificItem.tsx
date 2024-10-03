@@ -41,7 +41,10 @@ export const SpecificItemView = () => {
   const updateFunc = (vars: FormType) => {
     if (!data?.item?.id) return
     update({
-      variables: { item: { ...vars, userId: Number(user.id) }, itemId: Number(data.item.id) },
+      variables: {
+        item: { ...vars, userId: Number(user?.user?.id) },
+        itemId: Number(data.item.id),
+      },
     })
     navigate("/")
   }

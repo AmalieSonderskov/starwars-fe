@@ -30,7 +30,6 @@ const itemsForSaleQuery = gql(`
 
 export const ItemsForSaleView = () => {
   const navigate = useNavigate()
-  const user = useReactiveVar(userVar)
   const { data } = useQuery(itemsForSaleQuery)
   const initialCart = localStorage.getItem("cart")
   const [cart, setCart] = useState(initialCart ? (JSON.parse(initialCart) ?? []) : [])

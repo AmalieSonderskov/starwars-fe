@@ -21,20 +21,20 @@ const AddCreditsQuery = gql(`
 
 export const WalletView = () => {
   const { data } = useQuery(walletQuery)
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
   const [add] = useMutation(AddCreditsQuery)
   const [creditAmount, setCreditAmount] = useState("")
   const { toast } = useToast()
 
-  useEffect(() => {
-    const storedUserData = localStorage.getItem("userData")
-    if (storedUserData) {
-      const userData = JSON.parse(storedUserData)
-      userVar(userData)
-    } else {
-      navigate("/login")
-    }
-  }, [navigate])
+  // useEffect(() => {
+  //   const storedUserData = localStorage.getItem("userData")
+  //   if (storedUserData) {
+  //     const userData = JSON.parse(storedUserData)
+  //     userVar(userData)
+  //   } else {
+  //     navigate("/login")
+  //   }
+  // }, [navigate])
 
   const handleAddCredits = () => {
     const parsedCreditAmount = parseFloat(creditAmount)

@@ -1,3 +1,7 @@
+import { AuthObject } from "@/gql/graphql"
 import { makeVar } from "@apollo/client"
 
-export const userVar = makeVar({ username: "", id: 0, token: "", role: "", wallet: 0 })
+const storedUserData = localStorage.getItem("userData")
+export const userVar = makeVar<null | AuthObject>(
+  storedUserData ? JSON.parse(storedUserData) : null,
+)

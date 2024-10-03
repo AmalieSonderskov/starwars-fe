@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input"
 import { graphql } from "@/gql"
 import { userVar } from "@/state/userState"
-import { useMutation } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -16,31 +16,35 @@ const testQuery = graphql(`
         name
         role
         wallet
+        picture
       }
     }
   }
 `)
+
 export const LoginView = () => {
   const [username, setUsername] = useState("")
   const [login] = useMutation(testQuery)
   const navigate = useNavigate()
 
   const submitClick = () => {
-    login({ onCompleted: console.log, variables: { username } }).then((x) => {
+    login({
+      onCompleted: console.log,
+      variables: { username },
+    }).then((x) => {
       if (x.data?.login) {
-        const userData = {
-          id: x.data.login?.user?.id || -1,
-          token: x.data.login.token || "",
-          username: x.data?.login?.user?.name || "",
-          role: x.data?.login?.user?.role || "",
-          wallet: x.data?.login?.user?.wallet || 0,
-        }
-        localStorage.setItem("userData", JSON.stringify(userData))
+        // const userData = {
+        //   id: x.data.login?.user?.id || -1,
+        //   token: x.data.login.token || "",
+        //   username: x.data?.login?.user?.name || "",
+        //   role: x.data?.login?.user?.role || "",
+        //   wallet: x.data?.login?.user?.wallet || 0,
+        // }
         if (x.data.login?.token) {
           localStorage.setItem("token", x.data.login.token)
         }
-        console.log(userData)
-        userVar(userData)
+        localStorage.setItem("userData", JSON.stringify(x.data.login))
+        userVar(x.data?.login)
         navigate("/")
       }
     })

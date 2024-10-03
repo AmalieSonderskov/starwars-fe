@@ -4,8 +4,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { graphql } from "@/gql"
 import { useMutation, useReactiveVar } from "@apollo/client"
 import { FormType } from "@/components/SpecificItemForm"
-import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
 
 const addItemQuery = graphql(`
   mutation createItem($item: ItemInput!) {
@@ -23,26 +21,16 @@ const addItemQuery = graphql(`
 export const AddItemView = () => {
   const user = useReactiveVar(userVar)
   const [create] = useMutation(addItemQuery)
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    const storedUserData = localStorage.getItem("userData")
-    if (storedUserData) {
-      const userData = JSON.parse(storedUserData)
-      userVar(userData)
-    } else {
-      navigate("/login")
-    }
-  }, [navigate])
 
   const createItem = (data: FormType) => {
-    console.log(data)
-    console.log(user.id)
+    if (!user?.user?.id) {
+      throw new Error("No or incorrect user in create item")
+    }
     create({
       variables: {
         item: {
           ...data,
-          userId: user.id,
+          userId: user.user.id,
         },
       },
     })

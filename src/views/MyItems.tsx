@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/table"
 import { useQuery, useReactiveVar } from "@apollo/client"
 import { useNavigate } from "react-router-dom"
-import { useEffect } from "react"
 import { userVar } from "@/state/userState"
 
 import { gql } from "@apollo/client"
@@ -29,17 +28,9 @@ export const MyItemsView = () => {
   const navigate = useNavigate()
   const user = useReactiveVar(userVar)
 
-  const { data } = useQuery(testQuery, { variables: { userId: user?.id } })
-
-  useEffect(() => {
-    const storedUserData = localStorage.getItem("userData")
-    if (storedUserData) {
-      const userData = JSON.parse(storedUserData)
-      userVar(userData)
-    } else {
-      navigate("/login")
-    }
-  }, [navigate])
+  const { data } = useQuery(testQuery, {
+    variables: { userId: user?.user?.id },
+  })
 
   const items = data?.itemsByUser || []
 

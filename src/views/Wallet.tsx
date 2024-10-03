@@ -29,16 +29,6 @@ export const WalletView = () => {
   const [showWatto, setShowWatto] = useState(false)
   const [showCard, setShowCard] = useState(true)
 
-  useEffect(() => {
-    const storedUserData = localStorage.getItem("userData")
-    if (storedUserData) {
-      const userData = JSON.parse(storedUserData)
-      userVar(userData)
-    } else {
-      navigate("/login")
-    }
-  }, [navigate])
-
   const handleAddCredits = () => {
     setCount((prevCount) => prevCount + 1)
     console.log(count)

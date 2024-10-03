@@ -1,25 +1,16 @@
 import { Outlet, useNavigate } from "react-router-dom"
-import NavBar from "./components/NavBar"
-import { useEffect } from "react"
+
+import { useEffect, useState } from "react"
 import { userVar } from "./state/userState"
+import { useReactiveVar } from "@apollo/client"
+import NavBar from "./components/NavBar"
 
 function App() {
   const navigate = useNavigate()
+  const user = useReactiveVar(userVar)
 
   useEffect(() => {
-    const storedUserData = localStorage.getItem("userData")
-    if (storedUserData) {
-      const userData = JSON.parse(storedUserData)
-      userVar(userData)
-
-      if (userData.token) {
-        if (location.pathname === "/login" || location.pathname === "/") {
-          navigate("/")
-        }
-      } else {
-        navigate("/login")
-      }
-    } else {
+    if (!user) {
       navigate("/login")
     }
   }, [location, navigate])

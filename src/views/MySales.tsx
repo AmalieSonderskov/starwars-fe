@@ -1,4 +1,5 @@
-import { gql, useLazyQuery, useReactiveVar } from "@apollo/client"
+import { gql, useQuery, useReactiveVar } from "@apollo/client"
+import { useNavigate } from "react-router-dom"
 import { userVar } from "@/state/userState"
 import { useEffect } from "react"
 import {
@@ -22,44 +23,28 @@ interface HistoricItem {
 }
 
 const testQuery = gql(`
-    query userPurchase($userId: Int!) {
-    userPurchase(userId: $userId) {
+    query userSales($userId: Int!) {
+    userSales(userId: $userId) {
       id
       time
-      transactions {
-        id
-        time
-        historicItem
+      historicItems
       }
-    }
     }
   `)
 
-export const MyPurchasesView = () => {
-  // const navigate = useNavigate()
+export const MySales = () => {
+  //const navigate = useNavigate()
   const user = useReactiveVar(userVar)
-  const [fetchPurcheases, { data }] = useLazyQuery(testQuery, {
-    variables: { userId: user?.user?.id },
-  })
+  const { data } = useQuery(testQuery, { variables: { userId: user?.user?.id } })
 
-  useEffect(() => {
-    if (!user?.user) {
-      console.log("no user")
-      return
-    }
-    fetchPurcheases({ variables: { userId: user.user.id } })
-  }, [user?.user])
-
-  if (!data) {
-    return <div>loading</div>
-  }
+  const sales = data?.userSales || []
 
   return (
     <div className='p-8 text-[#8B4513]'>
       <div className='flex justify-center'>
         <header className='mb-10 bg-primary/50 px-5 py-2 text-center font-mono'>
-          <h1 className='mb-2 text-5xl font-bold underline'>Previous purchases</h1>
-          <p className='text-xl italic'>One entity's junk another's treasure</p>
+          <h1 className='mb-2 text-5xl font-bold underline'>Sales</h1>
+          <p className='text-xl italic'>Credits are worth a lot of junk!</p>
         </header>
       </div>
       <div className='m-3 grid place-items-center bg-primary/40 p-3'>
@@ -69,40 +54,33 @@ export const MyPurchasesView = () => {
               <TableRow>
                 <TableHead>Time</TableHead>
                 <TableHead>Items</TableHead>
-                <TableHead className='text-right'>Total</TableHead>
+                <TableHead className='text-right'>Income</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.userPurchase.length > 0 ? (
-                data.userPurchase.map((purchase) => (
-                  <TableRow key={purchase.id}>
-                    <TableCell>{replaceTimeZoneWithStarWars(purchase.time)}</TableCell>
+              {sales.length > 0 ? (
+                sales.map((sale) => {
+                  return (
+                    <TableRow key={sale.id}>
+                      <TableCell>{replaceTimeZoneWithStarWars(sale.time)}</TableCell>
 
-                    <TableCell>
-                      {purchase.transactions.map((transaction) => {
-                        const parsedItem = parseHistoricItem(transaction.historicItem)
-                        return (
-                          <div key={transaction.id}>
-                            {parsedItem
-                              ? `${parsedItem.name}: ᖬ${parsedItem.price}`
-                              : "No item available"}
-                          </div>
-                        )
-                      })}
-                    </TableCell>
+                      <TableCell>
+                        {parseHistoricItem(sale.historicItems)
+                          ? parseHistoricItem(sale.historicItems)?.name
+                          : "no info"}
+                      </TableCell>
 
-                    <TableCell className='text-right'>
-                      {"ᖬ" +
-                        purchase.transactions.reduce((total, transaction) => {
-                          const parsedItem = parseHistoricItem(transaction.historicItem)
-                          return total + (parsedItem?.price || 0)
-                        }, 0)}
-                    </TableCell>
-                  </TableRow>
-                ))
+                      <TableCell className='text-right'>
+                        {parseHistoricItem(sale.historicItems)
+                          ? "ᖬ" + parseHistoricItem(sale.historicItems)?.price
+                          : "no info"}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3}>No purchases to show</TableCell>
+                  <TableCell colSpan={3}>No sales to show</TableCell>
                 </TableRow>
               )}
             </TableBody>

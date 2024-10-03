@@ -13,8 +13,9 @@ import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@radix-ui/react-toast"
 import { Button } from "@/components/ui/button"
 import { graphql } from "@/gql"
-import { useMutation } from "@apollo/client"
+import { useMutation, useReactiveVar } from "@apollo/client"
 import { useNavigate } from "react-router-dom"
+import { userVar } from "@/state/userState"
 
 const createPurchaseQuery = graphql(`
   mutation createPurchase($buyerId: Int!, $itemInputs: [Int!]!) {
@@ -35,21 +36,18 @@ export const CartView = () => {
   const initialCart = localStorage.getItem("cart")
   const [cart, setCart] = useState<Item[]>(initialCart ? (JSON.parse(initialCart) ?? []) : [])
   const { toast } = useToast()
-  const [user, setUser] = useState()
+  //const [user, setUser] = useState()
   const [createPurchase] = useMutation(createPurchaseQuery)
   const navigate = useNavigate()
+  const user = useReactiveVar(userVar)
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cart")
-    const storedUserData = localStorage.getItem("userData")
+    //const storedUserData = localStorage.getItem("userData")
 
     if (storedCart) {
       const cartData = JSON.parse(storedCart)
       setCart(cartData)
-    }
-    if (storedUserData) {
-      const userData = JSON.parse(storedUserData)
-      setUser(userData)
     }
   }, [navigate])
 
@@ -80,16 +78,19 @@ export const CartView = () => {
   }
 
   const handlePurchase = () => {
+    if (!user?.user?.id) {
+      throw new Error("No user Id at handle purchase")
+    }
     const transactionIds = cart.map((item: Item) => item.id)
 
     createPurchase({
       variables: {
-        buyerId: user.id,
+        buyerId: user.user.id,
         itemInputs: transactionIds,
       },
     })
     console.log("transaction:", transactionIds)
-    console.log("User id:", user.id)
+    console.log("User id:", user.user.id)
     setCart([])
     localStorage.setItem("cart", JSON.stringify([]))
     if (cart.length === 0) {

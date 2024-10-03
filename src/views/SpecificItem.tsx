@@ -42,6 +42,7 @@ export const SpecificItemView = () => {
     if (!data?.item?.id) return
     update({
       variables: { item: { ...vars, userId: Number(user.id) }, itemId: Number(data.item.id) },
+      refetchQueries: ["itemsByUser"],
     })
     navigate("/")
   }

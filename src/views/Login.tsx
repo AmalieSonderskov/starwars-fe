@@ -26,7 +26,10 @@ export const LoginView = () => {
   const navigate = useNavigate()
 
   const submitClick = () => {
-    login({ onCompleted: console.log, variables: { username } }).then((x) => {
+    login({
+      onCompleted: console.log,
+      variables: { username },
+    }).then((x) => {
       if (x.data?.login) {
         const userData = {
           id: x.data.login?.user?.id || -1,
@@ -39,6 +42,7 @@ export const LoginView = () => {
         if (x.data.login?.token) {
           localStorage.setItem("token", x.data.login.token)
         }
+
         console.log(userData)
         userVar(userData)
         navigate("/")

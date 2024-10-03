@@ -33,6 +33,7 @@ export const ChooseAvatarView = () => {
     try {
       await updateProfilePic({
         variables: { picture: src },
+        refetchQueries: ["getUserInfo"],
       })
     } catch (err) {
       console.log(err)

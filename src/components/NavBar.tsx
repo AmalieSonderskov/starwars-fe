@@ -36,7 +36,7 @@ function NavBar() {
   const navigate = useNavigate()
   const { data } = useQuery(walletQuery)
   const { data: userData } = useQuery(userQuery)
-
+  console.log("data", userData)
   const handleLogout = () => {
     localStorage.removeItem("userData")
     localStorage.removeItem("token")
@@ -48,7 +48,7 @@ function NavBar() {
         <Navbar.Collapse id='basic-navbar-nav' className='flex flex-row items-center py-2'>
           <Nav.Link className='cursor-pointer' href='/myPage'>
             <Avatar>
-              <AvatarImage src={data?.userLoggedIn?.picture || "/src/assets/darthVader.png"} />
+              <AvatarImage src={userData?.userLoggedIn?.picture || "/src/assets/darthVader.png"} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </Nav.Link>
@@ -59,7 +59,7 @@ function NavBar() {
               </Nav.Link>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='bg-stone-900 text-white'>
-              <DropdownMenuLabel>Current balance: ᖬ{data?.userWallet}</DropdownMenuLabel>
+              <DropdownMenuLabel>Credits: ᖬ{data?.userWallet}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 {" "}
@@ -70,7 +70,7 @@ function NavBar() {
               <DropdownMenuItem>
                 {" "}
                 <Nav.Link className='hover:text-stone-400' href='/wallet'>
-                  Add balance
+                  Earn extra credits
                 </Nav.Link>
               </DropdownMenuItem>
 

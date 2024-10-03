@@ -12,7 +12,6 @@ import { MyProfileView } from "./views/MyProfile"
 import { ChooseAvatarView } from "./views/ChooseAvatar"
 import { MyPurchasesView } from "./views/MyPurchases"
 
-
 export const routes = createBrowserRouter([
   {
     path: "/",

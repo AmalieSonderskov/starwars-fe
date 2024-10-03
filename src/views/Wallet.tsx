@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { userVar } from "@/state/userState"
 import { gql, useMutation, useQuery } from "@apollo/client"
 
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+
 import "./Wallet.css"
 
 const walletQuery = gql(`
@@ -20,7 +19,7 @@ const AddCreditsQuery = gql(`
   } `)
 
 export const WalletView = () => {
-  const navigate = useNavigate()
+  const { data } = useQuery(walletQuery)
   const [add] = useMutation(AddCreditsQuery)
   const [position, setPosition] = useState({ top: "30%", left: "50%" })
   const [opacity, setOpacity] = useState(0)

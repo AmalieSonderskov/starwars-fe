@@ -19,6 +19,7 @@ interface HistoricItem {
   description: string
   userId: number
   forSale: boolean
+  weight: number
 }
 
 const testQuery = gql(`
@@ -38,7 +39,7 @@ const testQuery = gql(`
 export const MyPurchasesView = () => {
   // const navigate = useNavigate()
   const user = useReactiveVar(userVar)
-  const [fetchPurcheases, { data }] = useLazyQuery(testQuery, {
+  const [fetchPurcheases, { data, error, loading }] = useLazyQuery(testQuery, {
     variables: { userId: user?.user?.id },
   })
 

@@ -18,6 +18,7 @@ const documents = {
     "\n  mutation createPurchase($buyerId: Int!, $itemInputs: [Int!]!) {\n    createPurchase(buyerId: $buyerId, itemInputs: $itemInputs) {\n      id\n      time\n      buyerId\n      transactions {\n        id\n        time\n        historicItem\n      }\n    }\n  }\n": types.CreatePurchaseDocument,
     "\n  mutation updateProfilePicture($picture: String!) {\n    updateProfilePicture(picture: $picture) \n    }\n": types.UpdateProfilePictureDocument,
     "\n    query itemsForSale {\n        itemsForSale {\n        id\n        name\n        type\n        price\n        description\n        }\n    }\n    ": types.ItemsForSaleDocument,
+    "\n  subscription incrementedCount {\n    incrementedCount {\n      name\n      id\n      forSale\n      weight\n      price\n      type\n    }\n  }\n": types.IncrementedCountDocument,
     "\n  mutation Login($username: String!) {\n    login(username: $username) {\n      token\n      user {\n        id\n        name\n        role\n        wallet\n        picture\n      }\n    }\n  }\n": types.LoginDocument,
     "\n  query itemsByUser($userId: Int!) {\n    itemsByUser(userId: $userId) {\n      id\n      name\n      type\n      price\n      description\n      forSale\n    }\n  }\n": types.ItemsByUserDocument,
     "\n    query userPurchase($userId: Int!) {\n    userPurchase(userId: $userId) {\n      id\n      time\n      transactions {\n        id\n        time\n        historicItem\n      }\n    }\n    }\n  ": types.UserPurchaseDocument,
@@ -62,6 +63,10 @@ export function graphql(source: "\n  mutation updateProfilePicture($picture: Str
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    query itemsForSale {\n        itemsForSale {\n        id\n        name\n        type\n        price\n        description\n        }\n    }\n    "): (typeof documents)["\n    query itemsForSale {\n        itemsForSale {\n        id\n        name\n        type\n        price\n        description\n        }\n    }\n    "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription incrementedCount {\n    incrementedCount {\n      name\n      id\n      forSale\n      weight\n      price\n      type\n    }\n  }\n"): (typeof documents)["\n  subscription incrementedCount {\n    incrementedCount {\n      name\n      id\n      forSale\n      weight\n      price\n      type\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

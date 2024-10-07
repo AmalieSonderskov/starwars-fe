@@ -20,6 +20,7 @@ interface HistoricItem {
   description: string
   userId: number
   forSale: boolean
+  weight: number
 }
 
 const testQuery = gql(`

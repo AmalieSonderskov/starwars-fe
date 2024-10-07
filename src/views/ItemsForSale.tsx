@@ -7,8 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { gql, useQuery, useReactiveVar } from "@apollo/client"
-import { userVar } from "@/state/userState"
+import { gql, useQuery, useSubscription } from "@apollo/client"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Item } from "@/gql/graphql"
@@ -28,9 +27,23 @@ const itemsForSaleQuery = gql(`
     }
     `)
 
+const itemsSubscription = gql`
+  subscription incrementedCount {
+    incrementedCount {
+      name
+      id
+      forSale
+      weight
+      price
+      type
+    }
+  }
+`
+
 export const ItemsForSaleView = () => {
+  const { data: updatedItems } = useSubscription(itemsSubscription)
   const navigate = useNavigate()
-  const { data } = useQuery(itemsForSaleQuery)
+  //const { data } = useQuery(itemsForSaleQuery)
   const initialCart = localStorage.getItem("cart")
   const [cart, setCart] = useState(initialCart ? (JSON.parse(initialCart) ?? []) : [])
   const { toast } = useToast()
@@ -62,7 +75,8 @@ export const ItemsForSaleView = () => {
     })
   }
 
-  const products = data?.itemsForSale || []
+  //const products = data?.itemsForSale || []
+  const updatedItemsList = updatedItems?.incrementedCount || []
 
   return (
     <div className='min-h-screen p-8 text-[#8B4513]'>
@@ -73,9 +87,9 @@ export const ItemsForSaleView = () => {
         </header>
       </div>
       <div className='flex max-h-[75vh] w-full flex-wrap gap-4 overflow-y-auto'>
-        {products.map((product: Item) => (
+        {updatedItemsList.map((updateditem: Item) => (
           <Card
-            key={product.id}
+            key={updateditem.id}
             className='w-[calc(20%_-_1rem)] border-2 border-[#8B4513] bg-primary/80 shadow-lg'
           >
             <CardHeader>
@@ -88,20 +102,22 @@ export const ItemsForSaleView = () => {
               />
             </CardHeader>
             <CardContent>
-              <CardTitle className='mb-2 text-2xl text-[#8B4513]'>{product.name}</CardTitle>
+              <CardTitle className='mb-2 text-2xl text-[#8B4513]'>{updateditem.name}</CardTitle>
               <Badge variant='secondary' className='mb-2 bg-[#C19A6B] text-[#4A3933]'>
-                {product.type}
+                {updateditem.type}
               </Badge>
               <CardDescription className='mb-4 text-[#6B4423]'>
-                {product.description}
+                {updateditem.description}
               </CardDescription>
             </CardContent>
             <CardFooter className='flex items-center justify-between'>
-              <span className='text-2xl font-bold text-[#8B4513]'>{product.price} credits</span>
+              <span className='text-2xl font-bold text-[#8B4513]'>
+                {Math.floor(updateditem.price * updateditem.weight)} credits
+              </span>
               <Button
                 variant='outline'
                 className='cursor-pointer border-[#8B4513] text-[#8B4513] transition-colors hover:bg-[#8B4513] hover:text-[#E6D2B5]'
-                onClick={() => addToCart(product)}
+                onClick={() => addToCart(updateditem)}
               >
                 Add to cart
               </Button>

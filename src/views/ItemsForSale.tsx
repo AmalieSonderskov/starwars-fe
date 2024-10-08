@@ -7,35 +7,28 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { gql, useQuery, useSubscription } from "@apollo/client"
+import { gql, useSubscription } from "@apollo/client"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Item } from "@/gql/graphql"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@radix-ui/react-toast"
-
-const itemsForSaleQuery = gql(`
-    query itemsForSale {
-        itemsForSale {
-        id
-        name
-        type
-        price
-        description
-        }
-    }
-    `)
+import { userVar } from "@/state/userState"
 
 const itemsSubscription = gql`
-  subscription incrementedCount {
-    incrementedCount {
+  subscription itemsForSale {
+    itemsForSale {
       name
       id
       forSale
       weight
       price
       type
+      user {
+        id
+        name
+      }
     }
   }
 `
@@ -43,7 +36,6 @@ const itemsSubscription = gql`
 export const ItemsForSaleView = () => {
   const { data: updatedItems } = useSubscription(itemsSubscription)
   const navigate = useNavigate()
-  //const { data } = useQuery(itemsForSaleQuery)
   const initialCart = localStorage.getItem("cart")
   const [cart, setCart] = useState(initialCart ? (JSON.parse(initialCart) ?? []) : [])
   const { toast } = useToast()
@@ -75,8 +67,8 @@ export const ItemsForSaleView = () => {
     })
   }
 
-  //const products = data?.itemsForSale || []
-  const updatedItemsList = updatedItems?.incrementedCount || []
+  const updatedItemsList = updatedItems?.itemsForSale || []
+  const loggedInUserId = userVar()?.user?.id
 
   return (
     <div className='min-h-screen p-8 text-[#8B4513]'>
@@ -102,10 +94,13 @@ export const ItemsForSaleView = () => {
               />
             </CardHeader>
             <CardContent>
-              <CardTitle className='mb-2 text-2xl text-[#8B4513]'>{updateditem.name}</CardTitle>
-              <Badge variant='secondary' className='mb-2 bg-[#C19A6B] text-[#4A3933]'>
-                {updateditem.type}
-              </Badge>
+              <div className='flex flex-row justify-between'>
+                <CardTitle className='mb-2 text-2xl text-[#8B4513]'>{updateditem.name}</CardTitle>
+                <Badge variant='secondary' className='mb-2 bg-[#C19A6B] text-[#4A3933]'>
+                  {updateditem.type}
+                </Badge>
+              </div>
+              <div className='italic text-[#8B4513]'>Sold by: {updateditem.user?.name}</div>
               <CardDescription className='mb-4 text-[#6B4423]'>
                 {updateditem.description}
               </CardDescription>
@@ -116,8 +111,9 @@ export const ItemsForSaleView = () => {
               </span>
               <Button
                 variant='outline'
-                className='cursor-pointer border-[#8B4513] text-[#8B4513] transition-colors hover:bg-[#8B4513] hover:text-[#E6D2B5]'
-                onClick={() => addToCart(updateditem)}
+                className={`cursor-pointer border-[#8B4513] text-[#8B4513] transition-colors hover:bg-[#8B4513] hover:text-[#E6D2B5] ${loggedInUserId === updateditem.user?.id ? "cursor-not-allowed bg-gray-300" : ""}`}
+                onClick={() => loggedInUserId !== updateditem.user?.id && addToCart(updateditem)}
+                disabled={loggedInUserId === updateditem.user?.id}
               >
                 Add to cart
               </Button>

@@ -107,7 +107,7 @@ export const ItemsForSaleView = () => {
             </CardContent>
             <CardFooter className='flex items-center justify-between'>
               <span className='text-2xl font-bold text-[#8B4513]'>
-                {Math.floor(updateditem.price * updateditem.weight)} credits
+                {Math.floor(updateditem.price)} credits
               </span>
               <Button
                 variant='outline'

@@ -13,9 +13,26 @@ import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@radix-ui/react-toast"
 import { Button } from "@/components/ui/button"
 import { graphql } from "@/gql"
-import { useMutation, useReactiveVar } from "@apollo/client"
+import { gql, useMutation, useReactiveVar, useSubscription } from "@apollo/client"
 import { useNavigate } from "react-router-dom"
 import { userVar } from "@/state/userState"
+
+const itemsSubscription = gql`
+  subscription itemsForSale {
+    itemsForSale {
+      name
+      id
+      forSale
+      weight
+      price
+      type
+      user {
+        id
+        name
+      }
+    }
+  }
+`
 
 const createPurchaseQuery = graphql(`
   mutation createPurchase($buyerId: Int!, $itemInputs: [Int!]!) {
@@ -33,6 +50,7 @@ const createPurchaseQuery = graphql(`
 `)
 
 export const CartView = () => {
+  const { data: updatedItems } = useSubscription(itemsSubscription)
   const initialCart = localStorage.getItem("cart")
   const [cart, setCart] = useState<Item[]>(initialCart ? (JSON.parse(initialCart) ?? []) : [])
   const { toast } = useToast()
@@ -40,6 +58,7 @@ export const CartView = () => {
   const [createPurchase] = useMutation(createPurchaseQuery)
   const navigate = useNavigate()
   const user = useReactiveVar(userVar)
+  const updatedItemsList = updatedItems?.itemsForSale || []
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cart")
@@ -50,6 +69,17 @@ export const CartView = () => {
       setCart(cartData)
     }
   }, [navigate])
+
+  useEffect(() => {
+    if (!updatedItems) return;
+
+    const updatedCart = cart.map(item => {
+      const updatedItem = updatedItemsList.find((updated:Item) => updated.id === item.id);
+      
+      return updatedItem ? { ...item, price: updatedItem.price } : item;
+    });
+    setCart(updatedCart);
+  }, [updatedItems]);
 
   const handleRemoveItem = (itemToRemove: Item) => {
     const updatedCart = cart.filter((item) => item.id !== itemToRemove.id)

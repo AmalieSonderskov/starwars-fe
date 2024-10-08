@@ -15,9 +15,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  query getUserInfo {\n    userLoggedIn {\n      id\n      name\n      role\n      wallet\n      picture\n    }\n  }\n": types.GetUserInfoDocument,
     "\n  mutation createItem($item: ItemInput!) {\n    createItem(item: $item) {\n      id\n      name\n      type\n      price\n      description\n      forSale\n    }\n  }\n": types.CreateItemDocument,
+    "\n  subscription itemsForSale {\n    itemsForSale {\n      name\n      id\n      forSale\n      weight\n      price\n      type\n      user {\n        id\n        name\n      }\n    }\n  }\n": types.ItemsForSaleDocument,
     "\n  mutation createPurchase($buyerId: Int!, $itemInputs: [Int!]!) {\n    createPurchase(buyerId: $buyerId, itemInputs: $itemInputs) {\n      id\n      time\n      buyerId\n      transactions {\n        id\n        time\n        historicItem\n      }\n    }\n  }\n": types.CreatePurchaseDocument,
     "\n  mutation updateProfilePicture($picture: String!) {\n    updateProfilePicture(picture: $picture) \n    }\n": types.UpdateProfilePictureDocument,
-    "\n  subscription itemsForSale {\n    itemsForSale {\n      name\n      id\n      forSale\n      weight\n      price\n      type\n      user {\n        id\n        name\n      }\n    }\n  }\n": types.ItemsForSaleDocument,
     "\n  mutation Login($username: String!) {\n    login(username: $username) {\n      token\n      user {\n        id\n        name\n        role\n        wallet\n        picture\n      }\n    }\n  }\n": types.LoginDocument,
     "\n  query itemsByUser($userId: Int!) {\n    itemsByUser(userId: $userId) {\n      id\n      name\n      type\n      price\n      description\n      forSale\n    }\n  }\n": types.ItemsByUserDocument,
     "\n    query userPurchase($userId: Int!) {\n    userPurchase(userId: $userId) {\n      id\n      time\n      transactions {\n        id\n        time\n        historicItem\n      }\n    }\n    }\n  ": types.UserPurchaseDocument,
@@ -53,15 +53,15 @@ export function graphql(source: "\n  mutation createItem($item: ItemInput!) {\n 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  subscription itemsForSale {\n    itemsForSale {\n      name\n      id\n      forSale\n      weight\n      price\n      type\n      user {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  subscription itemsForSale {\n    itemsForSale {\n      name\n      id\n      forSale\n      weight\n      price\n      type\n      user {\n        id\n        name\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  mutation createPurchase($buyerId: Int!, $itemInputs: [Int!]!) {\n    createPurchase(buyerId: $buyerId, itemInputs: $itemInputs) {\n      id\n      time\n      buyerId\n      transactions {\n        id\n        time\n        historicItem\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation createPurchase($buyerId: Int!, $itemInputs: [Int!]!) {\n    createPurchase(buyerId: $buyerId, itemInputs: $itemInputs) {\n      id\n      time\n      buyerId\n      transactions {\n        id\n        time\n        historicItem\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation updateProfilePicture($picture: String!) {\n    updateProfilePicture(picture: $picture) \n    }\n"): (typeof documents)["\n  mutation updateProfilePicture($picture: String!) {\n    updateProfilePicture(picture: $picture) \n    }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  subscription itemsForSale {\n    itemsForSale {\n      name\n      id\n      forSale\n      weight\n      price\n      type\n      user {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  subscription itemsForSale {\n    itemsForSale {\n      name\n      id\n      forSale\n      weight\n      price\n      type\n      user {\n        id\n        name\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

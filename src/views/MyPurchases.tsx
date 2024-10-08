@@ -80,12 +80,12 @@ export const MyPurchasesView = () => {
                     <TableCell>{replaceTimeZoneWithStarWars(purchase.time)}</TableCell>
 
                     <TableCell>
-                      {purchase.transactions.map((transaction) => {
+                      {purchase.transactions.map((trkansaction) => {
                         const parsedItem = parseHistoricItem(transaction.historicItem)
                         return (
                           <div key={transaction.id}>
                             {parsedItem
-                              ? `${parsedItem.name}: ᖬ${parsedItem.price}`
+                              ? `${parsedItem.name}: ᖬ${Math.floor(parsedItem.price*parsedItem.weight)}`
                               : "No item available"}
                           </div>
                         )

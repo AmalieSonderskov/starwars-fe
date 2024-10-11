@@ -1,0 +1,18 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://127.0.0.1:5173",
+      "localStorage": [
+        {
+          "name": "token",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTcyODU0NDUwM30.joIQU-YD_gLCbcHNw4wFL5nPpZZwgFtrvxnRD78HuTI"
+        },
+        {
+          "name": "userData",
+          "value": "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTcyODU0NDUwM30.joIQU-YD_gLCbcHNw4wFL5nPpZZwgFtrvxnRD78HuTI\",\"user\":{\"id\":1,\"name\":\"Watto\",\"role\":\"ADMIN\",\"wallet\":100000,\"picture\":\"/assets/WattoProfile.png\",\"__typename\":\"AuthInputObject\"},\"__typename\":\"AuthObject\"}"
+        }
+      ]
+    }
+  ]
+}

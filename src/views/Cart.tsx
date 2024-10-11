@@ -54,7 +54,6 @@ export const CartView = () => {
   const initialCart = localStorage.getItem("cart")
   const [cart, setCart] = useState<Item[]>(initialCart ? (JSON.parse(initialCart) ?? []) : [])
   const { toast } = useToast()
-  //const [user, setUser] = useState()
   const [createPurchase] = useMutation(createPurchaseQuery)
   const navigate = useNavigate()
   const user = useReactiveVar(userVar)
@@ -62,7 +61,6 @@ export const CartView = () => {
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cart")
-    //const storedUserData = localStorage.getItem("userData")
 
     if (storedCart) {
       const cartData = JSON.parse(storedCart)
@@ -71,15 +69,15 @@ export const CartView = () => {
   }, [navigate])
 
   useEffect(() => {
-    if (!updatedItems) return;
+    if (!updatedItems) return
 
-    const updatedCart = cart.map(item => {
-      const updatedItem = updatedItemsList.find((updated:Item) => updated.id === item.id);
-      
-      return updatedItem ? { ...item, price: updatedItem.price } : item;
-    });
-    setCart(updatedCart);
-  }, [updatedItems]);
+    const updatedCart = cart.map((item) => {
+      const updatedItem = updatedItemsList.find((updated: Item) => updated.id === item.id)
+
+      return updatedItem ? { ...item, price: updatedItem.price } : item
+    })
+    setCart(updatedCart)
+  }, [updatedItems])
 
   const handleRemoveItem = (itemToRemove: Item) => {
     const updatedCart = cart.filter((item) => item.id !== itemToRemove.id)
@@ -107,35 +105,49 @@ export const CartView = () => {
     console.log(itemToRemove.name)
   }
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
     if (!user?.user?.id) {
       throw new Error("No user Id at handle purchase")
     }
     const transactionIds = cart.map((item: Item) => item.id)
 
-    createPurchase({
-      variables: {
-        buyerId: user.user.id,
-        itemInputs: transactionIds,
-      },
-    })
-    console.log("transaction:", transactionIds)
-    console.log("User id:", user.user.id)
-    setCart([])
-    localStorage.setItem("cart", JSON.stringify([]))
-    if (cart.length === 0) {
-      toast({
-        title: "Cart is empty",
-        description: "Please add items to cart before purchasing",
+    try {
+      await createPurchase({
+        variables: {
+          buyerId: user.user.id,
+          itemInputs: transactionIds,
+        },
       })
-    } else {
-      toast({
-        title: "Purchase Successful",
-        description: "Your items in cart has been purchased.",
-      })
+      if (cart.length === 0) {
+        toast({
+          title: "Your cart is empty",
+          description: "Please add items to cart before purchasing",
+        })
+      } else {
+        toast({
+          title: "Purchase Successful",
+          description: "Your items  in cart has been purchased.",
+        })
+      }
+
+      setCart([])
+      localStorage.setItem("cart", JSON.stringify([]))
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.message.includes("Insufficient Funds")) {
+          toast({
+            title: "Insufficient funds",
+            description: "You do not have enough credits to purchase this junk",
+          })
+        } else {
+          toast({
+            title: "Error",
+            description: "There was an error processing your purchase. Please try again later",
+          })
+        }
+      }
     }
   }
-
   return (
     <div className='p-8 text-[#8B4513]'>
       <div className='flex justify-center'>

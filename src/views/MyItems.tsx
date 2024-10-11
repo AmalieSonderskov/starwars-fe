@@ -6,11 +6,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useQuery, useReactiveVar } from "@apollo/client"
+import { useMutation, useQuery, useReactiveVar } from "@apollo/client"
 import { useNavigate } from "react-router-dom"
 import { userVar } from "@/state/userState"
 
 import { gql } from "@apollo/client"
+import { useToast } from "@/hooks/use-toast"
 
 const testQuery = gql(`
   query itemsByUser($userId: Int!) {
@@ -24,9 +25,21 @@ const testQuery = gql(`
     }
   }
 `)
+
+const deleteItemMutation = gql(`
+  mutation deleteItem($itemId: Int!) {
+    deleteItem(itemId: $itemId) {
+      id
+      name
+    }
+  }
+`)
+
 export const MyItemsView = () => {
   const navigate = useNavigate()
   const user = useReactiveVar(userVar)
+  const [remove] = useMutation(deleteItemMutation)
+  const { toast } = useToast()
 
   const { data } = useQuery(testQuery, {
     variables: { userId: user?.user?.id },
@@ -34,8 +47,16 @@ export const MyItemsView = () => {
 
   const items = data?.itemsByUser || []
 
-  const handleButtonClick = (id: number) => {
+  const handleUpdate = (id: number) => {
     navigate(`/item/${id}`)
+  }
+
+  const handleDelete = (id: number) => {
+    remove({ variables: { itemId: id } })
+    toast({
+      title: "Item deleted",
+      description: `Item has been removed from your stock`,
+    })
   }
 
   return (
@@ -69,10 +90,22 @@ export const MyItemsView = () => {
                     <TableCell className='text-right'>ᖬ{item.price}</TableCell>
                     <TableCell colSpan={5}>
                       <button
-                        onClick={() => handleButtonClick(item.id)}
+                        onClick={() => handleUpdate(item.id)}
                         className='w-full rounded bg-orange-200/80 px-1 py-2 text-white hover:bg-orange-300/80'
                       >
                         Update
+                      </button>
+                    </TableCell>
+                    <TableCell colSpan={5}>
+                      <button
+                        data-testid={`delete-${item.name
+                          ?.split(" ")
+                          .map((s) => s.toLocaleLowerCase())
+                          .join("-")}`}
+                        onClick={() => handleDelete(item.id)}
+                        className='w-full rounded bg-orange-200/80 px-1 py-2 text-white hover:bg-orange-300/80'
+                      >
+                        Delete
                       </button>
                     </TableCell>
                   </TableRow>
